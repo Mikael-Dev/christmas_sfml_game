@@ -2,7 +2,9 @@
 
 void Game::initVariables()
 {
-    window = nullptr;
+    // window = nullptr;
+
+    running = true;
 }
 
 void Game::initWindow()
@@ -10,51 +12,75 @@ void Game::initWindow()
     videoMode.height = 600;
     videoMode.width = 800;
     window = new sf::RenderWindow(videoMode, "game_", sf::Style::Titlebar | sf::Style::Close);
+    window->setFramerateLimit(60);
+    window->setVerticalSyncEnabled(false);
+}
+
+void Game::initPlayer()
+{
+    player = new Player();
 }
 
 Game::Game()
 {
-    initVariables();
     initWindow();
+    initVariables();
+
+    initPlayer();
 }
 
 Game::~Game()
 {
-    delete window;
+    delete this->window;
+
+    delete this->player;
 }
 
-const bool Game::isRunning() const
+void Game::isRunning()
 {
-    return window->isOpen();
+    if (window->isOpen())
+        running = true;
+    else if (!window->isOpen())
+        running = false;
+}
+
+void Game::run()
+{
+    while (window->isOpen())
+    {
+        pollEvents();
+
+        update();
+        render();
+    }
 }
 
 void Game::pollEvents()
 {
-    while (window->pollEvent(event))
+    sf::Event e;
+    while (window->pollEvent(e))
     {
-        switch (event.type)
-        {
-        case sf::Event::Closed:
+        if (e.Event::type == sf::Event::Closed)
             window->close();
-            break;
-        case sf::Event::KeyPressed:
-            if (event.key.code == sf::Keyboard::Escape)
-                window->close();
-            break;
-        }
+        if (e.Event::KeyPressed && e.Event::key.code == sf::Keyboard::Escape)
+            window->close();
     }
 }
 
 void Game::update()
 {
-    pollEvents();
+
+    // pollEvents();
+
+    player->update();
 }
 
 void Game::render()
 {
-    window->clear(sf::Color(255, 255, 255, 255));
+    window->clear(sf::Color::Black);
 
     // draw game objects
+    player->render(*window);
 
     window->display();
 }

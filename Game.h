@@ -2,21 +2,25 @@
 
 #include <iostream>
 
-#include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Network.hpp>
 #include <SFML/System.hpp>
+#include <SFML/System.hpp>
+#include <SFML/Audio.hpp>
+
+#include "Player.h"
 
 class Game
 {
 private:
     sf::RenderWindow *window;
     sf::VideoMode videoMode;
-    sf::Event event;
+
+    // Player class
+    Player *player;
 
     void initVariables();
     void initWindow();
+    void initPlayer();
 
 public:
     bool running;
@@ -24,9 +28,11 @@ public:
     Game();
     virtual ~Game();
 
-    const bool isRunning() const;
+    void isRunning();
 
     void pollEvents();
+
+    void run();
 
     void update();
     void render();
